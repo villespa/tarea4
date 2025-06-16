@@ -1,0 +1,6 @@
+# Archivos compilados C++
+*.o
+*.so
+*.pyd
+*.dll
+*.dylib

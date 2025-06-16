@@ -1,0 +1,26 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/lib",
+                "/usr/include/python3.10",
+                "/home/pbn/.local/lib/python3.10/site-packages/pybind11/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/g++",
+            "cStandard": "c17",
+            "cppStandard": "c++11",
+            "intelliSenseMode": "linux-gcc-x64",
+            "compilerArgs": [
+                "-std=c++11",
+                "-Wall",
+                "-Wextra",
+                "-fPIC"
+            ]
+        }
+    ],
+    "version": 4
+}
