@@ -11,6 +11,11 @@ private:
     double mu; // Coeficiente de fricción cinética
     double g;  // aceleracion de gravedad
 
+    // Metodos internos
+    double distMaxNoColision(Esfera a);
+    double tiempoYPosColision(Esfera a, Esfera b);
+    double DistanciaEntre(Esfera a, Esfera b);
+
 
 
 public:

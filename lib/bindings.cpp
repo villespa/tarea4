@@ -10,9 +10,9 @@ PYBIND11_MODULE(colisiones, m) {
     // Clase Esfera - SOLO exportar el método getRadio()
     py::class_<Esfera>(m, "Esfera")
         .def(py::init<double, double, double, double>(),  // Constructor básico
-             "Constructor:  Esfera(double masa, double posicionX, double velocidad, double radio)",
+             "Constructor:  Esfera(double masa, double posicionX0, double velocidad0)",
              py::arg("masa"), py::arg("posicionX"), py::arg("velocidad"), py::arg("radio"))
-        .def("getRadio", &Esfera::getRadio,
+        .def("getRadio", &Esfera::getMasa,
              "Devuelve el radio de la esfera");
     
     // Clase Simulador - SOLO exportar el método getG()
