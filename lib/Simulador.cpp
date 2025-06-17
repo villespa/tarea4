@@ -80,20 +80,23 @@ Simulador::Simulador(double mu, double g) : mu(mu), g(g) {}
     //dA,máx + dB,máx ≥ D
 
     bool Simulador::verificacionDeColicion(Esfera a, Esfera b) {
-        double xa = a.getPosicionX();
-        double xb = b.getPosicionX();
-        double da_max = this->distMaxNoColision(a);
-        double db_max = this->distMaxNoColision(b);
-
-        double sumaDistancias = da_max + db_max;
-        double distanciaInicial = std::abs(xb - xa);
-
-        if (sumaDistancias >= distanciaInicial) {
-            return true;
-        } else {
-            return false; 
-        }
-
+    double xa = a.getPosicionX();
+    double xb = b.getPosicionX();
+    double va = a.getVelocidad();
+    double vb = b.getVelocidad();
+    
+    // Primero verificar que se muevan una hacia la otra
+    if (va - vb <= 0) {
+        return false; // No se acercan
+    }
+    
+    // Calcular distancias máximas en la dirección correcta
+    double da_max = this->distMaxNoColision(a);
+    double db_max = this->distMaxNoColision(b);
+    
+    // Verificar si pueden cubrirse la distancia inicial
+    double distanciaInicial = std::abs(xb - xa);
+    return (da_max + db_max >= distanciaInicial);
     }
 
     //Velocidades después del choque: Sea mA y mB la masa de las esferas A y B. Luego del
@@ -163,12 +166,12 @@ Simulador::Simulador(double mu, double g) : mu(mu), g(g) {}
 
 // Metodos publicos
     bool Simulador::colisiona(Esfera a, Esfera b){
-        if (this->verificacionDeColicion(a, b)) {
-            double tc = this->tiempoColision(a, b);
-            if (tc >= 0) {
-                return true;
-            }
+        //if (this->verificacionDeColicion(a, b)) {
+        double tc = this->tiempoColision(a, b);
+        if (tc >= 0) {
+            return true;
         }
+        //}
         return false;
     }
 
