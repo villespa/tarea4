@@ -30,7 +30,7 @@ Simulador::Simulador(double mu, double g) : mu(mu), g(g) {}
     //iempo y posición de colisión (si ocurre): Sean vA0 y vB0 las velocidades iniciales
     //(incluyendo el signo) de las esferas A y B, respectivamente, si asumimos que ambas se mueven
     //el tiempo que tarda cada esfera en detenerse por fricción es: tf,i = vi0/(μₖg)
-    double Simulador::tiempoYPosColision(Esfera a, Esfera b) {
+    double Simulador::tiempoColision(Esfera a, Esfera b) {
         double xa = a.getPosicionX();
         double xb = b.getPosicionX();
         double va = a.getVelocidad();
@@ -38,7 +38,7 @@ Simulador::Simulador(double mu, double g) : mu(mu), g(g) {}
 
         double arriba1 = xb - xa;
         double abajo1 = va - vb;
-        if (abajo1 <= 0 || va == 0 || vb == 0) {
+        if (abajo1 <= 0) {
             return -1; 
         }
 
@@ -54,9 +54,45 @@ Simulador::Simulador(double mu, double g) : mu(mu), g(g) {}
             return -1; 
         }
 
-        //a posición de colisión xc se logra calcular con: xc = xA0 + vA0tc − 12 μkgt2c
+        return tc; //tiempo de colicion
+
+    }
+
+    double Simulador::posColicion(Esfera a, Esfera b) {
+        double xa = a.getPosicionX();
+        double xb = b.getPosicionX();
+        double va = a.getVelocidad();
+        double vb = b.getVelocidad();
+
+        double tc = this->tiempoColision(a, b);
+        //la posición de colisión xc se logra calcular con: xc = xA0 + vA0tc − 12 μkgt2c
         double xc = xa + va * tc - (0.5 * this->mu * this->g * tc * tc);
         return xc;
+    }
+
+
+    //Verificación de colisión: Sean xA0 y xB0 las posiciones iniciales de las esferas A y B,
+    //respectivamente. Definimos la distancia entre ellas al inicio como:
+    //D = |xB0 − xA0|
+    //Entonces, sea dA,máx la distancia máxima que puede recorrer la esfera A, y dB,máx la corres-
+    //pondiente para B. Si la suma de esas distancias es mayor o igual a D, entonces eventualmente
+    //colisionarán:
+    //dA,máx + dB,máx ≥ D
+
+    bool Simulador::verificacionDeColicion(Esfera a, Esfera b) {
+        double xa = a.getPosicionX();
+        double xb = b.getPosicionX();
+        double da_max = this->distMaxNoColision(a);
+        double db_max = this->distMaxNoColision(b);
+
+        double sumaDistancias = da_max + db_max;
+        double distanciaInicial = std::abs(xb - xa);
+
+        if (sumaDistancias >= distanciaInicial) {
+            return true;
+        } else {
+            return false; 
+        }
 
     }
 
@@ -75,6 +111,27 @@ Simulador::Simulador(double mu, double g) : mu(mu), g(g) {}
     //vA0 + mB − mA
     //mA + mB
     //vB0
+    std::pair<double,double> Simulador::velocidadesDespuesChoque(Esfera a, Esfera b) {
+        double ma = a.getMasa();
+        double mb = b.getMasa();
+        double va0 = a.getVelocidad();
+        double vb0 = b.getVelocidad();
+
+        if (ma + mb == 0) {
+            return std::make_pair(0,0); // Evitar división por cero
+        }
+
+        double tc = this -> tiempoColision(a, b);
+        if (tc < 0) {
+            return std::make_pair(0,0); // No hay colisión
+        }
+
+        double vPrimaA = (ma - mb) / (ma + mb) * va0 + (2 * mb) / (ma + mb) * vb0;
+        double vPrimaB = (2 * ma) / (ma + mb) * va0 + (mb - ma) / (ma + mb) * vb0;
+        return std::make_pair(vPrimaA, vPrimaB);
+
+    }
+
 
 
 
@@ -84,41 +141,56 @@ Simulador::Simulador(double mu, double g) : mu(mu), g(g) {}
     //2μkg
     //donde d es la distancia adicional recorrida tras el choque, bajo fricción, hasta detenerse.
 
+    double Simulador::distanciaPostColicion(Esfera e) {
+        // usar despues de actualizar atributo de velocidad de la esfera
+        double vPrima = e.getVelocidad();
+        if (vPrima == 0) {
+            return 0; // Si la velocidad es cero, no hay distancia que recorrer
+        }
+        double arriba = vPrima * vPrima;
+        double abajo = 2 * this->mu * this->g;
+        if (abajo == 0) {
+            return -1; 
+        }
+        return arriba / abajo; 
+        
+    }
+
+
+
+
+
+
 // Metodos publicos
     bool Simulador::colisiona(Esfera a, Esfera b){
-        double va = a.getVelocidad();
-        double vb = b.getVelocidad();
-
-        if (va < 0 && vb < 0) {
-            return false;
+        if (this->verificacionDeColicion(a, b)) {
+            double tc = this->tiempoColision(a, b);
+            if (tc >= 0) {
+                return true;
+            }
         }
-        if (va > 0 && vb > 0) {
-            return false; 
+        return false;
+    }
+
+    double Simulador::tiempo_colision(Esfera a, Esfera b){
+        return this->tiempoColision(a, b);
+    }
+
+    double Simulador::posicion_colision(Esfera a, Esfera b){
+        return this->posColicion(a, b);
+    }
+
+    std::pair<double, double> Simulador::velocidades_post(Esfera a, Esfera b){
+        std::pair<double, double> va, vb =  this->velocidadesDespuesChoque(a, b);
+        a.setVelocidad(va.first);
+        b.setVelocidad(vb.second);
+        return std::make_pair(va.first, vb.second);
+    }
+
+    double Simulador::distancia_final(Esfera e){
+        double distancia = this->distanciaPostColicion(e);
+        if (distancia < 0) {
+            return -1; 
         }
-
-        double da = this->distMaxNoColision(a);
-        double db = this->distMaxNoColision(b);
-
-        double xa = a.getPosicionX();
-        double xb = b.getPosicionX();
-
-        double distancia = Simulador::DistanciaEntre(a, b);
-
-
-    }
-
-    double tiempo_colision(Esfera a, Esfera b){
-
-    }
-
-    double posicion_colision(Esfera a, Esfera b){
-
-    }
-
-    std::pair<double, double>velocidades_post(Esfera a, Esfera b){
-
-    }
-
-    double distancia_final(Esfera e){
-
+        return distancia;
     }

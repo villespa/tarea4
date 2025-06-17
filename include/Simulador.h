@@ -13,8 +13,13 @@ private:
 
     // Metodos internos
     double distMaxNoColision(Esfera a);
-    double tiempoYPosColision(Esfera a, Esfera b);
+    double tiempoColision(Esfera a, Esfera b);
+    double posColicion(Esfera a, Esfera b);
     double DistanciaEntre(Esfera a, Esfera b);
+    bool verificacionDeColicion(Esfera a, Esfera b);
+    std::pair<double,double> velocidadesDespuesChoque(Esfera a, Esfera b);
+    double distanciaPostColicion(Esfera e);
+
 
 
 
@@ -35,13 +40,9 @@ public:
 
     // Metodos
     bool colisiona(Esfera a, Esfera b);
-
     double tiempo_colision(Esfera a, Esfera b);
-
     double posicion_colision(Esfera a, Esfera b);
-
-    std::pair<double, double>velocidades_post(Esfera a, Esfera b);
-
+    std::pair<double, double> velocidades_post(Esfera a, Esfera b);
     double distancia_final(Esfera e);
 
 
