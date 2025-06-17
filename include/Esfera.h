@@ -21,7 +21,7 @@ public:
 
 
     // Constructores    
-    Esfera(double masa = 0.0, double posicionX = 0.0, double velocidad = 0.0);
+    Esfera(double masa, double x0, double v0);
 
 
     // Metodos

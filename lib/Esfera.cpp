@@ -1,6 +1,10 @@
 #include "../include/Esfera.h"
 
-Esfera::Esfera(double masa, double x0, double v0): masa(masa), x0(x0), v0(v0) {}
+Esfera::Esfera(double masa, double x0, double v0) {
+    this->masa = masa;
+    this->x0 = x0;
+    this->v0 = v0;
+}
 
 
 // Getters

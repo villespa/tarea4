@@ -7,7 +7,7 @@ Simulador::Simulador(double mu, double g) : mu(mu), g(g) {}
     //Distancia máxima sin colisión
     double Simulador::distMaxNoColision(Esfera a) {
         double va = a.getVelocidad();
-        double x0a = a.getPosicionX();
+        //double x0a = a.getPosicionX();
 
 
         double arriba = va * va;
@@ -60,9 +60,9 @@ Simulador::Simulador(double mu, double g) : mu(mu), g(g) {}
 
     double Simulador::posColicion(Esfera a, Esfera b) {
         double xa = a.getPosicionX();
-        double xb = b.getPosicionX();
+        //double xb = b.getPosicionX();
         double va = a.getVelocidad();
-        double vb = b.getVelocidad();
+        //double vb = b.getVelocidad();
 
         double tc = this->tiempoColision(a, b);
         //la posición de colisión xc se logra calcular con: xc = xA0 + vA0tc − 12 μkgt2c
@@ -181,10 +181,10 @@ Simulador::Simulador(double mu, double g) : mu(mu), g(g) {}
     }
 
     std::pair<double, double> Simulador::velocidades_post(Esfera a, Esfera b){
-        std::pair<double, double> va, vb =  this->velocidadesDespuesChoque(a, b);
-        a.setVelocidad(va.first);
-        b.setVelocidad(vb.second);
-        return std::make_pair(va.first, vb.second);
+        std::pair<double, double> velocidades = this->velocidadesDespuesChoque(a, b);
+        a.setVelocidad(velocidades.first);
+        b.setVelocidad(velocidades.second);
+        return std::make_pair(velocidades.first, velocidades.second);
     }
 
     double Simulador::distancia_final(Esfera e){

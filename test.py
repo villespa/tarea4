@@ -6,20 +6,24 @@ print("-" * 30)
 # Test 1: Importar
 try:
     from colisiones import Esfera, Simulador
-    print("✓ Importación OK")
+    print("Importación OK")
 except Exception as e:
-    print(f"❌ Error: {e}")
+    print(f"Error: {e}")
     exit(1)
 
-# Test 2: Crear objetos
-esfera = Esfera(2.0, 0.0, 5.0)
-simulador = Simulador(0.2, 9.81)
-print("✓ Objetos creados")
-
-# Test 3: Llamar métodos
-radio = esfera.getRadio()
-gravedad = simulador.getG()
-print(f"✓ Radio: {radio}")
-print(f"✓ Gravedad: {gravedad}")
-
-print("\n🎉 ¡Todo funciona!")
+s = Simulador(0.2, 9.81)
+a = Esfera(2, 0, 5)
+b = Esfera(1, 10, -3)
+if s.colisiona(a, b):
+    print("Colisión!")
+    print("Ocurre en t =", s.tiempo_colision(a, b), "s")
+    print("Posición:", s.posicion_colision(a, b), "m")
+    va, vb = s.velocidades_post(a, b)
+    print("Velocidades luego del choque:")
+    print("A:", va, "m/s")
+    print("B:", vb, "m/s")
+    print("Distancias finales:")
+    print("A:", s.distancia_final(Esfera(2, 0, va)), "m")
+    print("B:", s.distancia_final(Esfera(1, 10, vb)), "m")
+else:
+    print("No colisionan")
