@@ -7,9 +7,10 @@ LIB = ./lib
 OBJ = ./obj
 
 # PyBind11
-PYTHON_INCLUDE = -I/usr/include/python3.10 -I/home/pbn/.local/lib/python3.10/site-packages/pybind11/include
+PYTHON_VERSION = $(shell python3 --version | cut -d '.' -f 1-2 | tr -d ' ' | sed 's/Python/python/')
+PYTHON_INCLUDE = -I/usr/include/$(PYTHON_VERSION) -I$(PWD)/external/pybind11/include
 
-# Archivos fuente (CORREGIDO)
+
 CPPFILES = $(wildcard ./lib/*.cpp)
 SOURCES = $(CPPFILES)
 OBJECTS = $(SOURCES:.cpp=.o)
@@ -19,7 +20,6 @@ TARGET = colisiones.so
 
 all: $(TARGET)
 
-# Linking corregido
 $(TARGET): $(OBJECTS)
 	$(CXX) -shared $(CXXFLAGS) $(OBJECTS) -o $@
 

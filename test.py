@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 
-print("Test PyBind11 - Colisiones")
-print("-" * 30)
 
-# Test 1: Importar
 try:
     from colisiones import Esfera, Simulador
-    print("Importación OK")
+    print("Import funciona")
 except Exception as e:
     print(f"Error: {e}")
     exit(1)

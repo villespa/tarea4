@@ -7,7 +7,7 @@
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/lib",
                 "/usr/include/python3.10",
-                "/home/pbn/.local/lib/python3.10/site-packages/pybind11/include"
+                "/home/pbn/Documents/tarea4/external/pybind11/include",
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++",

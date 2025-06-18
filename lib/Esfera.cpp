@@ -1,6 +1,12 @@
 #include "../include/Esfera.h"
+#include <stdexcept>
 
 Esfera::Esfera(double masa, double x0, double v0) {
+    if (masa <= 0) {
+        throw std::invalid_argument("La masa debe ser positiva.");
+    }
+
+
     this->masa = masa;
     this->x0 = x0;
     this->v0 = v0;

@@ -1,9 +1,18 @@
 #include "../include/Simulador.h"
 #include <cmath>
+#include <iostream>
+#include <stdexcept>
 
-Simulador::Simulador(double mu, double g) : mu(mu), g(g) {}
+Simulador::Simulador(double mu, double g){
 
-//metodos internos
+    if (mu < 0 || g <= 0) {
+        throw std::invalid_argument("El coeficiente de fricción cinética debe ser no negativo y la gravedad debe ser positiva.");
+    }
+    this->mu = mu;
+    this->g = g;
+}
+
+//metodos internosa
     //Distancia máxima sin colisión
     double Simulador::distMaxNoColision(Esfera a) {
         double va = a.getVelocidad();
@@ -187,7 +196,7 @@ Simulador::Simulador(double mu, double g) : mu(mu), g(g) {}
         std::pair<double, double> velocidades = this->velocidadesDespuesChoque(a, b);
         a.setVelocidad(velocidades.first);
         b.setVelocidad(velocidades.second);
-        return std::make_pair(velocidades.first, velocidades.second);
+        return std::make_pair(velocidades.first,velocidades.second);
     }
 
     double Simulador::distancia_final(Esfera e){
@@ -195,5 +204,5 @@ Simulador::Simulador(double mu, double g) : mu(mu), g(g) {}
         if (distancia < 0) {
             return -1; 
         }
-        return distancia;
+        return distancia ;
     }
