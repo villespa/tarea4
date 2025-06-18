@@ -16,17 +16,8 @@ Simulador::Simulador(double mu, double g){
     //Distancia máxima sin colisión
     double Simulador::distMaxNoColision(Esfera a) {
         double va = a.getVelocidad();
-        //double x0a = a.getPosicionX();
 
-
-        double arriba = va * va;
-        double abajo = 2 * mu * g;
-
-
-        if (abajo == 0) {
-            return -1;
-        }
-        return arriba / abajo;
+        return va*va / (2 * (mu * g)); 
     }
 
     // Distancia entre dos esferas
@@ -45,13 +36,13 @@ Simulador::Simulador(double mu, double g){
         double va = a.getVelocidad();
         double vb = b.getVelocidad();
 
-        double arriba1 = xb - xa;
-        double abajo1 = va - vb;
-        if (abajo1 <= 0) {
+        double abajo = va - vb;
+
+        if ( abajo  <= 0) {
             return -1; 
         }
 
-        double tc = arriba1 / abajo1; 
+        double tc = (xb - xa) / (abajo); 
 
         double tfa = std::abs(va) / (this->mu * this->g);
         double tfb = std::abs(vb) / (this->mu * this->g);
@@ -69,14 +60,11 @@ Simulador::Simulador(double mu, double g){
 
     double Simulador::posColicion(Esfera a, Esfera b) {
         double xa = a.getPosicionX();
-        //double xb = b.getPosicionX();
         double va = a.getVelocidad();
-        //double vb = b.getVelocidad();
 
         double tc = this->tiempoColision(a, b);
         //la posición de colisión xc se logra calcular con: xc = xA0 + vA0tc − 12 μkgt2c
-        double xc = xa + va * tc - (0.5 * this->mu * this->g * tc * tc);
-        return xc;
+        return xa + va * tc - (0.5 * this->mu * this->g * tc * tc);
     }
 
 
@@ -89,23 +77,19 @@ Simulador::Simulador(double mu, double g){
     //dA,máx + dB,máx ≥ D
 
     bool Simulador::verificacionDeColicion(Esfera a, Esfera b) {
-    double xa = a.getPosicionX();
-    double xb = b.getPosicionX();
-    double va = a.getVelocidad();
-    double vb = b.getVelocidad();
-    
-    // Primero verificar que se muevan una hacia la otra
-    if (va - vb <= 0) {
-        return false; // No se acercan
-    }
-    
-    // Calcular distancias máximas en la dirección correcta
-    double da_max = this->distMaxNoColision(a);
-    double db_max = this->distMaxNoColision(b);
-    
-    // Verificar si pueden cubrirse la distancia inicial
-    double distanciaInicial = std::abs(xb - xa);
-    return (da_max + db_max >= distanciaInicial);
+        double xa = a.getPosicionX();
+        double xb = b.getPosicionX();
+        double va = a.getVelocidad();
+        double vb = b.getVelocidad();
+        
+        // Primero verificar que se muevan una hacia la otra
+        if (va <= vb) {
+            return false; // No se acercan
+        }
+        
+        // Calcular distancias máximas en la dirección correcta
+        // Verificar si pueden cubrirse la distancia inicial
+        return (this->distMaxNoColision(a) + this->distMaxNoColision(b) >= std::abs(xb - xa));
     }
 
     //Velocidades después del choque: Sea mA y mB la masa de las esferas A y B. Luego del
@@ -129,7 +113,7 @@ Simulador::Simulador(double mu, double g){
         double va0 = a.getVelocidad();
         double vb0 = b.getVelocidad();
 
-        if (ma + mb == 0) {
+        if (ma == 0.0 || mb == 0.0) {
             return std::make_pair(0,0); // Evitar división por cero
         }
 
@@ -157,14 +141,13 @@ Simulador::Simulador(double mu, double g){
         // usar despues de actualizar atributo de velocidad de la esfera
         double vPrima = e.getVelocidad();
         if (vPrima == 0) {
-            return 0; // Si la velocidad es cero, no hay distancia que recorrer
+            return 0;
         }
-        double arriba = vPrima * vPrima;
         double abajo = 2 * this->mu * this->g;
         if (abajo == 0) {
             return -1; 
         }
-        return arriba / abajo; 
+        return (vPrima * vPrima) / abajo; 
         
     }
 

@@ -19,7 +19,6 @@ private:
     bool verificacionDeColicion(Esfera a, Esfera b);
     std::pair<double,double> velocidadesDespuesChoque(Esfera a, Esfera b);
     double distanciaPostColicion(Esfera e);
-    bool validarParametros(Esfera a, Esfera b);
     
 
 

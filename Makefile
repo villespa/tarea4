@@ -7,8 +7,8 @@ LIB = ./lib
 OBJ = ./obj
 
 # PyBind11
-PYTHON_VERSION = $(shell python3 --version | cut -d '.' -f 1-2 | tr -d ' ' | sed 's/Python/python/')
-PYTHON_INCLUDE = -I/usr/include/$(PYTHON_VERSION) -I$(PWD)/external/pybind11/include
+PYTHON_VERSION = $(shell python3-config --includes | cut -d ' ' -f 1)
+PYTHON_INCLUDE = $(PYTHON_VERSION) -I$(PWD)/external/pybind11/include
 
 
 CPPFILES = $(wildcard ./lib/*.cpp)
